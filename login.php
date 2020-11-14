@@ -7,11 +7,12 @@ if(mysqli_connect_errno())
     echo "1: Connection failed"; //error code #1 = connection failed
     exit();
 }
-$username = $_POST["name"];
+$username = mysqli_real_escape_string($con, $_POST["name"]);
+$usernameclean = filter_var($username, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
 $password = $_POST["password"];
 
 //check if name exists
-$namecheckquery = "SELECT username, salt, hash, score FROM players WHERE username = '" . $username . "';";
+$namecheckquery = "SELECT username, salt, hash, score FROM players WHERE username = '" . $usernameclean . "';";
 $namecheck = mysqli_query($con,$namecheckquery) or die ("2: Name check querry failed"); //error code #2 = name check querry failed
 if(mysqli_num_rows($namecheck)!=1)
 {
